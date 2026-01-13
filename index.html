@@ -228,12 +228,13 @@
         $('#year-select').append(`<option value=${year_val} selected>${year_val}</option>`);
         const sorted_years = $('#year-select').children().toArray().sort((a, b) => a.value < b.value);
 
+        this.cur_year = year_val;
+
         $('#year-select').html('');
         $('#year-select').append(sorted_years);
-        $('#year-select').trigger('change');
 
-        this.cur_month = $('#month-select').val();
-        this.cur_year = year_val;
+
+        $('#year-select').trigger('change');
       };
 
       static new_income = () => {
@@ -241,14 +242,15 @@
         const person = $('#income-person').val();
 
         const income_record = {amount: amount, person: person}
+        let income_records = this.records_list[this.cur_year][this.cur_month]['income'];
 
         const id = $('#income-id').val();
 
         if (id == -1) {
-          this.records_list[this.cur_year][this.cur_month]['income'].push(income_record);
+          income_records.push(income_record);
         }
         else {
-          this.records_list[this.cur_year][this.cur_month]['income'][id] = income_record;
+          income_records[id] = income_record;
         }
 
         reset_income_form();
@@ -266,7 +268,15 @@
       }
 
       static delete_income = (id) => {
-        unset(this.records_list[this.cur_year][this.cur_month]['income'][id]);
+        let income_records = this.records_list[this.cur_year][this.cur_month]['income'];
+        let n = income_records.length;
+
+        for (let i = id + 1; i < n; i++) {
+          income_records[i - 1] = income_records[i];
+        }
+
+        income_records = income_records.splice(n - 1);
+
         refresh_tables();
       }
 
