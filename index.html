@@ -7,14 +7,13 @@
   <link rel="stylesheet" href="./assets/bootstrap.min.css">
   <script src="./assets/bootstrap.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="./dev.js"></script>
 </head>
 
 <body>
   <nav class="p-2 navbar bg-primary text-light mb-3">
     <h3>Personal Finance Dashboard</h3>
     <label for="import-year" class="btn btn-secondary">Import Year</label>
-    <input type="file" id="import-year" accept="json" class="d-none">
+    <input type="file" id="import-year" accept="json" class="d-none" onchange="FinanceRecord.import_year()">
   </nav>
   <main class="px-2">
     <div>
@@ -42,7 +41,8 @@
           </select>
         </div>
       </div>
-      <btn class="btn btn-primary" id="export" style="display: none;" onclick="FinanceRecord.export_year()">Export Year</btn>
+      <btn class="btn btn-primary" id="export" style="display: none;" onclick="FinanceRecord.export_year()">Export Year
+      </btn>
     </div>
 
     <ul class="nav nav-tabs my-3" id="nav-tabs" style="display: none;">
@@ -69,7 +69,8 @@
     <div id='income-tab' style="display: none;">
       <div class="w-100 d-flex flex-column align-items-center mb-3">
         <h4>Income</h4>
-        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#income-modal">Add Income</button>
+        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#income-modal">Add
+          Income</button>
 
         <h5>Ian's Income</h5>
         <table class="table table-striped w-50 mb-5">
@@ -105,7 +106,8 @@
               </div>
               <div class="modal-footer d-flex justify-content-between">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_income();" data-bs-dismiss="modal">Submit</button>
+                <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_record('income');"
+                  data-bs-dismiss="modal">Submit</button>
               </div>
             </div>
           </div>
@@ -116,31 +118,65 @@
     <div id='expenses-tab' style="display: none;">
       <div class="w-100 d-flex flex-column align-items-center mb-3">
         <h4>Expenses</h4>
-        <table class="table-striped w-75">
-          <tbody id="expenses-table">
-            <tr data-bs-toggle="modal" data-bs-target="#expense-modal">
-              <td class="btn btn-outline-primary w-100">Add Expense</td>
-            </tr>
+        <button class="btn btn-outline-primary mb-5" data-bs-toggle="modal" data-bs-target="#expenses-modal">Add
+          Expense</button>
+
+        <h5>Ian's Expenses</h5>
+        <table class="table-striped w-75 mb-3">
+          <tbody id="expenses-table-ian">
           </tbody>
         </table>
 
-        <div id="expense-modal" class="modal" tabindex="-1" role="dialog">
+        <h5>Marty's Expenses</h5>
+        <table class="table-striped w-75 mb-3">
+          <tbody id="expenses-table-marty">
+          </tbody>
+        </table>
+
+        <div id="expenses-modal" class="modal" tabindex="-1" role="dialog">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title">Enter Expense</h5>
               </div>
               <div class="modal-body">
-                <input type="text" value="" id="expense-name" class="form-control">
-                <select id="expense-category" class="form-select">
-                  <option>
-
-                  </option>
-                </select>
+                <input id="expenses-id" type="hidden" val="-1">
+                <div class="mb-3">
+                  <label for="expenses-name" class="form-label fw-bold">Expense Name</label>
+                  <input type="text" value="" id="expenses-name" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="expenses-amount" class="form-label fw-bold">Expense Amount</label>
+                  <input type="text" value="" id="expensew-amount" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="expenses-category" class="form-label fw-bold">Expense Category</label>
+                  <select id="expenses-category" class="form-select">
+                    <option value="rent">Rent</option>
+                    <option value="groceries">Groceries</option>
+                    <option value="internet">Internet</option>
+                    <option value="electricity">Electricity</option>
+                    <option value="medical">Medical</option>
+                    <option value="gas">Gas</option>
+                    <option value="insurance">Insurnace</option>
+                    <option value="subscriptions">Subscriptions</option>
+                    <option value="travel">Travel</option>
+                    <option value="food">Food</option>
+                    <option value="fun">Fun</option>
+                    <option value="loans">Loans</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="expenses-person" class="form-label fw-bold">Person</label>
+                  <select id="expenses-person" class="form-select">
+                    <option value="ian">Ian</option>
+                    <option value="marty">Marty</option>
+                  </select>
+                </div>
               </div>
               <div class="modal-footer d-flex justify-content-between">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_year();"
+                <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_record('expenses');"
                   data-bs-dismiss="modal">Submit</button>
               </div>
             </div>
@@ -202,7 +238,8 @@
         </div>
         <div class="modal-footer d-flex justify-content-between">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_year();" data-bs-dismiss="modal">Submit</button>
+          <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_year();"
+            data-bs-dismiss="modal">Submit</button>
         </div>
       </div>
     </div>
@@ -237,83 +274,107 @@
         $('#year-select').trigger('change');
       };
 
-      static new_income = () => {
-        const amount = $('#income-amount').val();
-        const person = $('#income-person').val();
+      static new_record = (type) => {
+        const record = {};
+        let id = -1;
 
-        const income_record = {amount: amount, person: person}
-        let income_records = this.records_list[this.cur_year][this.cur_month]['income'];
+        let records = this.get_records_table(type);
 
-        const id = $('#income-id').val();
+        for (const element of $(`#${type}-modal`).find('input,select')) {
+          const name = element.id.split('-')[1];
+
+          if (name == 'id') {
+            id = element.value;
+          }
+          else {
+            record[element.id.split('-')[1]] = element.value;
+          }
+        }
 
         if (id == -1) {
-          income_records.push(income_record);
+          records.push(record);
         }
         else {
-          income_records[id] = income_record;
+          records[id] = record;
         }
 
-        reset_income_form();
-        refresh_income_table();
-      };
-
-      static edit_income = (id) => {
-        const income_record = this.records_list[this.cur_year][this.cur_month]['income'];
-
-        $('#income-id').val(id);
-        $('#income-amount').val(income_record.amount);
-        $('#income-person').find(`[value=${income_record.person}]`).prop('selected');
-
-        $('#income-modal').modal('show');
+        reset_form(type);
+        refresh_table(type);
       }
 
-      static delete_income = (id) => {
-        let income_records = this.records_list[this.cur_year][this.cur_month]['income'];
-        let n = income_records.length;
+      static edit_record = (type, id) => {
+        const record = this.records_list[this.cur_year][this.cur_month][type][id];
+        $(`#${type}-id`).val(id);
 
-        for (let i = id + 1; i < n; i++) {
-          income_records[i - 1] = income_records[i];
+        for (const [key, value] of Object.entries(record)) {
+          const element = $(`#${type}-${key}`);
+
+          if (element[0].nodeName == 'input') {
+            element.val(value);
+          }
+          else if (element[0].nodeName == 'select') {
+            element.find(`[value=${value}]`).prop('selected', true)
+          }
         }
 
-        income_records = income_records.splice(n - 1);
+        $(`#${type}-modal`).modal('show');
+      };
+
+      static delete_record = (type, id) => {
+        let records = this.records_list[this.cur_year][this.cur_month][type];
+        let n = records.length;
+
+        for (let i = id + 1; i < n; i++) {
+          records[i - 1] = records[i];
+        }
+
+        records = records.splice(n - 1);
 
         refresh_tables();
       }
-
-
-      static new_expense = () => {
-
-      };
-
-      static new_account = () => {
-
-      };
-
-      static new_asset = () => {
-
-      };
-
-      static new_loan = () => {
-
-      };
 
       static get_records_table = (table_name) => {
         return this.records_list[this.cur_year][this.cur_month][table_name];
       }
 
       static export_year = () => {
+        const json = JSON.stringify({ year: this.cur_year, data: this.records_list[this.cur_year] });
+        const blob = new Blob([json], { type: 'text/string' });
+        const download = document.createElement('a');
 
+        download.href = URL.createObjectURL(blob);
+        download.download = 'personal_finance_sheet_' + this.cur_year + '.json';
+        download.click();
+
+        URL.revokeObjectURL(download.href);
       };
 
       static import_year = () => {
+        const file = $('#import-year')[0].files[0];
+        const reader = new FileReader();
 
+        reader.addEventListener('load', (e) => {
+          const data = JSON.parse(e.target.result);
+          FinanceRecord.records_list[data.year] = data.data;
+
+          $('#year-select').html('');
+
+          for (const year in FinanceRecord.records_list) {
+            $('#year-select').append(`<option value=${year}>${year}</option>`);
+          }
+
+          const sorted_years = $('#year-select').children().toArray().sort((a, b) => a.value < b.value);
+          $('#year-select').html('');
+          $('#year-select').append(sorted_years);
+
+          FinanceRecord.cur_year = $('#year-select').find('option:first').val()
+          $('#year-select').find('option:first').prop('selected', true);
+          $('#year-select').trigger('change');
+        });
+
+        reader.readAsText(file);
       };
     };
-
-    $('#year-select,#month-select').on('change', () => {
-      $('#nav-tabs').show();
-      $('#export').show();
-    });
 
     const hide_tabs = () => {
       const tab_names = $('.nav-link').toArray().map(x => x.getHTML().toLowerCase())
@@ -329,88 +390,61 @@
       $(`#${tab_name}-link`).addClass('active');
     };
 
+    const reset_form = (type) => {
+      const inputs = $(`#${type}-modal`).find('input');
 
-    const reset_income_form = () => {
-      $('#income-id').val(-1);
-      $('#income-amount').val(0);
-      $('#income-date').val('');
-    }
+      for (const input of inputs) {
+        input.value = '';
 
-    const refresh_tables = () => {
-      refresh_income_table();
-      refresh_expenses_table();
-      refresh_accounts_table();
-      refresh_assets_table();
-      refresh_loans_table();
-      refresh_summary();
-    };
-
-    const refresh_income_table = () => {
-      const income_records = FinanceRecord.get_records_table('income');
-      $('#income-table-ian').html('');
-      $('#income-table-marty').html('');
-
-      for (const id in income_records) {
-        const tr = $(`<tr></tr>`);
-        tr.append(`
-        <td class="d-flex justify-content-between">
-          <button onclick='FinanceRecord.edit_income(${id})' class="btn btn-outline-success">$${income_records[id].amount}</button>
-          <button class="btn btn-danger" onclick="FinanceRecord.delete_income(${id})">Delete</button>
-        </td>
-        `);
-
-        $(`#income-table-${income_records[id].person}`).append(tr);
+        if (input.id.split('-')[1] == 'id') {
+          input.value = '-1';
+        }
       }
-    };
-
-    const refresh_expenses_table = () => {
-
-    }
-
-    const refresh_accounts_table = () => {
-
-    };
-
-    const refresh_assets_table = () => {
-
-    };
-
-    const refresh_loans_table = () => {
-
     };
 
     const refresh_summary = () => {
 
     };
 
-    $('#year-select,#month-select').on('change', refresh_tables);
+    const new_record_button = (type, id, record) => {
+      switch (type) {
+        case 'income': return `
+        <td class="d-flex justify-content-between">
+          <button onclick="FinanceRecord.edit_record('income', ${id})" class="btn btn-outline-success">$${record.amount}</button>
+          <button class="btn btn-danger" onclick="FinanceRecord.delete_record('income', ${id})">Delete</button>
+        </td>
+        `;
+      }
+    }
 
-    window.addEventListener('beforeunload', () => {
-      if (typeof DEV_ENV == 'undefined') {
-        return;
+    const refresh_table = (type) => {
+      const records = FinanceRecord.get_records_table(type);
+
+      $(`#${type}-table-ian`).html('');
+      $(`#${type}-table-marty`).html('');
+
+      for (const id in records) {
+        const tr = $('<tr></tr>');
+        tr.append(new_record_button(type, id, records[id]));
+
+        $(`#${type}-table-${records[id].person}`).append(tr);
+      }
+    };
+
+    const refresh_tables = () => {
+      const links = $('.nav-link');
+
+      for (const link of links) {
+        refresh_table(link.text.toLowerCase());
       }
 
-      localStorage.setItem('records', JSON.stringify(FinanceRecord.records_list));
-    });
+      refresh_summary();
+    };
 
-    $(() => {
-      if (typeof DEV_ENV == 'undefined') {
-        return;
-      }
-
-      FinanceRecord.records_list = JSON.parse(localStorage.getItem('records'));
-
-      for (const year in FinanceRecord.records_list) {
-        $('#year-select').append(`<option value=${year}>${year}</option>`);
-      }
-
-      const sorted_years = $('#year-select').children().toArray().sort((a, b) => a.value < b.value);
-      $('#year-select').html('');
-      $('#year-select').append(sorted_years);
-
-      FinanceRecord.cur_year = $('#year-select').find('option:first').val()
-      $('#year-select').find('option:first').prop('selected', true);
-      $('#year-select').trigger('change');
+    $('#year-select,#month-select').on('change', () => {
+      $('#nav-tabs').show();
+      $('#export').show();
+      refresh_tables();
     });
   </script>
 </body>
