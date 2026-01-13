@@ -376,11 +376,15 @@
     $('#year-select,#month-select').on('change', refresh_tables);
 
     window.addEventListener('beforeunload', () => {
+      if (typeof DEV_ENV == 'undefined') {
+        return;
+      }
+
       localStorage.setItem('records', JSON.stringify(FinanceRecord.records_list));
     });
 
     $(() => {
-      if (typeof DEV_ENV == undefined) {
+      if (typeof DEV_ENV == 'undefined') {
         return;
       }
 
