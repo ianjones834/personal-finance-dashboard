@@ -3,26 +3,6 @@ class FinanceRecord {
   static cur_year = 0;
   static cur_month = 0;
 
-  static new_year = () => {
-    const year_val = $('#year').val();
-    const year = {};
-
-    for (let i = 0; i < 12; i++) {
-      year[i] = { income: [], expenses: [], assets: [], accounts: [], loans: [] };
-    }
-
-    this.records_list[year_val] = year;
-
-    $('#year-select').append(`<option value=${year_val} selected>${year_val}</option>`);
-    const sorted_years = $('#year-select').children().toArray().sort((a, b) => a.value < b.value);
-
-    this.cur_year = year_val;
-
-    $('#year-select').html('');
-    $('#year-select').append(sorted_years);
-
-    $('#year-select').trigger('change');
-  };
 
   static new_record = (type) => {
     const record = {};
@@ -58,16 +38,16 @@ class FinanceRecord {
   }
 
   static edit_record = (type, id) => {
-    const record = this.records_list[this.cur_year][this.cur_month][type][id];
+    const record = this.get_records_table(type)[id];
     $(`#${type}-id`).val(id);
 
     for (const [key, value] of Object.entries(record)) {
       const element = $(`#${type}-${key}`);
 
-      if (element[0].nodeName == 'input') {
+      if (element[0].nodeName.toLowerCase() == 'input') {
         element.val(value);
       }
-      else if (element[0].nodeName == 'select') {
+      else if (element[0].nodeName.toLowerCase() == 'select') {
         element.find(`[value=${value}]`).prop('selected', true)
       }
     }
@@ -92,6 +72,24 @@ class FinanceRecord {
     return this.records_list[this.cur_year][this.cur_month][table_name];
   }
 
+  static new_year = () => {
+    const year_val = $('#year').val();
+    const year = {};
+
+    for (let i = 0; i < 12; i++) {
+      year[i] = { income: [], expenses: [], assets: [], accounts: [], loans: [] };
+    }
+
+    this.records_list[year_val] = year;
+
+    $('#year-select').append(`<option value=${year_val} selected>${year_val}</option>`);
+
+    this.cur_year = year_val;
+
+    this.sort_years();
+    $('#year-select').trigger('change');
+  };
+
   static export_year = () => {
     const json = JSON.stringify({ year: this.cur_year, data: this.records_list[this.cur_year] });
     const blob = new Blob([json], { type: 'text/string' });
@@ -112,21 +110,22 @@ class FinanceRecord {
       const data = JSON.parse(e.target.result);
       FinanceRecord.records_list[data.year] = data.data;
 
-      $('#year-select').html('');
+      $('#year-select').append(`<option value=${data.year}>${data.year}</option>`);
 
-      for (const year in FinanceRecord.records_list) {
-        $('#year-select').append(`<option value=${year}>${year}</option>`);
-      }
+      this.cur_year = data.year;
 
-      const sorted_years = $('#year-select').children().toArray().sort((a, b) => a.value < b.value);
-      $('#year-select').html('');
-      $('#year-select').append(sorted_years);
-
-      FinanceRecord.cur_year = $('#year-select').find('option:first').val()
-      $('#year-select').find('option:first').prop('selected', true);
+      this.sort_years();
       $('#year-select').trigger('change');
     });
 
     reader.readAsText(file);
   };
+
+  static sort_years = () => {
+      const sorted_years = $('#year-select').children().toArray().sort((a, b) => a.value < b.value);
+      $('#year-select').html('');
+      $('#year-select').append(sorted_years);
+      $('#year-select option').prop('selected', false);
+      $('#year-select').find(`[value=${this.cur_year}]`).prop('selected', true);
+  }
 };
