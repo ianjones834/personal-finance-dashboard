@@ -7,16 +7,32 @@
   <link rel="stylesheet" href="./assets/bootstrap.min.css">
   <script src="./assets/bootstrap.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://kit.fontawesome.com/7d5a1b1b0d.js" crossorigin="anonymous"></script>
+  <style>
+    .summary > div {
+      border-top: 1px solid black;
+    }
+  </style>
 </head>
 
 <body>
+  <!-- #region header -->
+
   <nav class="p-2 navbar bg-primary text-light mb-3">
     <h3>Personal Finance Dashboard</h3>
     <label for="import-year" class="btn btn-secondary">Import Year</label>
     <input type="file" id="import-year" accept="json" class="d-none" onchange="FinanceRecord.import_year()">
   </nav>
+
+
+  <!-- #endregion -->
+
+  <!-- #region main -->
+
   <main class="px-2">
     <div>
+
+      <!-- #region year-month-menu -->
       <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#year-modal">New Year</button>
       <div class="row">
         <div class="col-3">
@@ -41,10 +57,33 @@
           </select>
         </div>
       </div>
+
+      <div id="year-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Enter Year</h5>
+            </div>
+            <div class="modal-body">
+              <input type="text" value="" id="year" class="form-control">
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_year();"
+                data-bs-dismiss="modal">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- #endregion -->
+
       <btn class="btn btn-primary" id="export" style="display: none;" onclick="FinanceRecord.export_year()">Export Year
       </btn>
+
+
     </div>
 
+    <!-- #region tabs -->
     <ul class="nav nav-tabs my-3" id="nav-tabs" style="display: none;">
       <li class="nav-item">
         <a class="nav-link" id="income-link" onclick="show_tab('income')">Income</a>
@@ -65,7 +104,9 @@
         <a class="nav-link" id="summary-link" onclick="show_tab('summary')">Summary</a>
       </li>
     </ul>
+    <!-- #endregion -->
 
+    <!-- #region income-tab -->
     <div id='income-tab' style="display: none;">
       <div class="w-100 d-flex flex-column align-items-center mb-3">
         <h4>Income</h4>
@@ -73,177 +114,569 @@
           Income</button>
 
         <h5>Ian's Income</h5>
-        <table class="table table-striped w-50 mb-5">
+        <table class="table table-striped w-50 mb-5" style="max-width: 250px;">
           <tbody id="income-table-ian">
           </tbody>
         </table>
 
         <h5>Marty's Income</h5>
-        <table class="table table-striped w-50">
+        <table class="table table-striped w-50" style="max-width: 250px;">
           <tbody id="income-table-marty">
           </tbody>
         </table>
-
-        <div id="income-modal" class="modal" tabindex="-1" role="dialog">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Enter Income</h5>
+      </div>
+      <div id="income-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Enter Income</h5>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" value="-1" id="income-id">
+              <div class="form-group">
+                <label class="form-label fw-bold" for="income-name">Income Name</label>
+                <input type="text" value="" id="income-name" class="form-control">
               </div>
-              <div class="modal-body">
-                <input type="hidden" value="-1" id="income-id">
-                <div class="form-group">
-                  <label class="form-label fw-bold" for="income-amount">Income Amount</label>
-                  <input type="number" value="" id="income-amount" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label class="form-label fw-bold" for="income-person">Person</label>
-                  <select id="income-person" class="form-select">
-                    <option value="ian" selected>Ian</option>
-                    <option value="marty">Marty</option>
-                  </select>
-                </div>
+              <div class="form-group">
+                <label class="form-label fw-bold" for="income-amount">Income Amount</label>
+                <input type="number" value="" id="income-amount" class="form-control">
               </div>
-              <div class="modal-footer d-flex justify-content-between">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_record('income');"
-                  data-bs-dismiss="modal">Submit</button>
+              <div class="form-group">
+                <label class="form-label fw-bold" for="income-person">Person</label>
+                <select id="income-person" class="form-select">
+                  <option value="ian" selected>Ian</option>
+                  <option value="marty">Marty</option>
+                </select>
               </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_record('income');"
+                data-bs-dismiss="modal">Submit</button>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <!-- #endregion -->
 
+    <!-- #region expenses-tab -->
     <div id='expenses-tab' style="display: none;">
       <div class="w-100 d-flex flex-column align-items-center mb-3">
         <h4>Expenses</h4>
-        <button class="btn btn-outline-primary mb-5" data-bs-toggle="modal" data-bs-target="#expenses-modal">Add
+        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#expenses-modal">Add
           Expense</button>
 
+        <h5>Shared Expenses</h5>
+        <table class="table table-striped w-75 mb-5" style="max-width: 250px;">
+          <tbody id="expenses-table-shared">
+          </tbody>
+        </table>
+
         <h5>Ian's Expenses</h5>
-        <table class="table-striped w-75 mb-3">
+        <table class="table table-striped w-75 mb-5" style="max-width: 250px;">
           <tbody id="expenses-table-ian">
           </tbody>
         </table>
 
         <h5>Marty's Expenses</h5>
-        <table class="table-striped w-75 mb-3">
+        <table class="table table-striped w-75 mb-5" style="max-width: 250px;">
           <tbody id="expenses-table-marty">
           </tbody>
         </table>
+      </div>
 
-        <div id="expenses-modal" class="modal" tabindex="-1" role="dialog">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Enter Expense</h5>
+      <div id="expenses-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Enter Expense</h5>
+            </div>
+            <div class="modal-body">
+              <input id="expenses-id" type="hidden" val="-1">
+              <div class="mb-3">
+                <label for="expenses-name" class="form-label fw-bold">Expense Name</label>
+                <input type="text" value="" id="expenses-name" class="form-control">
               </div>
-              <div class="modal-body">
-                <input id="expenses-id" type="hidden" val="-1">
-                <div class="mb-3">
-                  <label for="expenses-name" class="form-label fw-bold">Expense Name</label>
-                  <input type="text" value="" id="expenses-name" class="form-control">
-                </div>
-                <div class="mb-3">
-                  <label for="expenses-amount" class="form-label fw-bold">Expense Amount</label>
-                  <input type="text" value="" id="expensew-amount" class="form-control">
-                </div>
-                <div class="mb-3">
-                  <label for="expenses-category" class="form-label fw-bold">Expense Category</label>
-                  <select id="expenses-category" class="form-select">
-                    <option value="rent">Rent</option>
-                    <option value="groceries">Groceries</option>
-                    <option value="internet">Internet</option>
-                    <option value="electricity">Electricity</option>
-                    <option value="medical">Medical</option>
-                    <option value="gas">Gas</option>
-                    <option value="insurance">Insurnace</option>
-                    <option value="subscriptions">Subscriptions</option>
-                    <option value="travel">Travel</option>
-                    <option value="food">Food</option>
-                    <option value="fun">Fun</option>
-                    <option value="loans">Loans</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label for="expenses-person" class="form-label fw-bold">Person</label>
-                  <select id="expenses-person" class="form-select">
-                    <option value="ian">Ian</option>
-                    <option value="marty">Marty</option>
-                  </select>
-                </div>
+              <div class="mb-3">
+                <label for="expenses-amount" class="form-label fw-bold">Expense Amount</label>
+                <input type="number" value="" id="expenses-amount" class="form-control">
               </div>
-              <div class="modal-footer d-flex justify-content-between">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_record('expenses');"
-                  data-bs-dismiss="modal">Submit</button>
+              <div class="mb-3">
+                <label for="expenses-category" class="form-label fw-bold">Expense Category</label>
+                <select id="expenses-category" class="form-select">
+                  <option value="rent">Rent</option>
+                  <option value="groceries">Groceries</option>
+                  <option value="internet">Internet</option>
+                  <option value="electricity">Electricity</option>
+                  <option value="medical">Medical</option>
+                  <option value="gas">Gas</option>
+                  <option value="insurance">Insurnace</option>
+                  <option value="subscriptions">Subscriptions</option>
+                  <option value="travel">Travel</option>
+                  <option value="food">Food</option>
+                  <option value="fun">Fun</option>
+                  <option value="loans">Loans</option>
+                </select>
               </div>
+              <div class="mb-3">
+                <label for="expenses-person" class="form-label fw-bold">Person</label>
+                <select id="expenses-person" class="form-select">
+                  <option value="ian">Ian</option>
+                  <option value="marty">Marty</option>
+                  <option value="shared">Shared</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_record('expenses');"
+                data-bs-dismiss="modal">Submit</button>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <!-- #endregion -->
 
+    <!-- #region accounts-tab -->
     <div id='accounts-tab' style="display: none;">
       <div class="w-100 d-flex flex-column align-items-center mb-3">
         <h4>Accounts</h4>
-        <table class="table-striped w-75">
-          <tr onclick="new_account()">
-            <td class="btn btn-outline-primary w-100">Add Account</td>
-          </tr>
+        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#accounts-modal">Add
+          Accounts</button>
+
+        <h5>Ian's Accounts</h5>
+        <table class="table table-striped w-75 mb-5" style="max-width: 300px;">
+          <tbody id="accounts-table-ian"></tbody>
+        </table>
+
+        <h5>Marty's Accounts</h5>
+        <table class="table table-striped w-75 mb-5" style="max-width: 300px;">
+          <tbody id="accounts-table-marty"></tbody>
+        </table>
+
+        <h5>Shared Accounts</h5>
+        <table class="table table-striped w-75 mb-5" style="max-width: 300px;">
+          <tbody id="accounts-table-shared"></tbody>
         </table>
       </div>
-    </div>
 
+      <div id="accounts-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Enter Account</h5>
+            </div>
+            <div class="modal-body">
+              <input id="accounts-id" type="hidden" val="-1">
+              <div class="mb-3">
+                <label for="accounts-name" class="form-label fw-bold">Account Name</label>
+                <input type="text" value="" id="accounts-name" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="accounts-amount" class="form-label fw-bold">Account Start Amount</label>
+                <input type="number" value="" id="accounts-amount" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="accounts-endamount" class="form-label fw-bold">Account End Amount</label>
+                <input type="number" value="" id="accounts-endamount" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="accounts-person" class="form-label fw-bold">Person</label>
+                <select id="accounts-person" class="form-select">
+                  <option value="ian">Ian</option>
+                  <option value="marty">Marty</option>
+                  <option value="shared">Shared</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_record('accounts');"
+                data-bs-dismiss="modal">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- #endregion -->
+
+    <!-- #region assets-tab -->
     <div id="assets-tab" style="display: none;">
 
       <div class="w-100 d-flex flex-column align-items-center mb-3">
         <h4>Assets</h4>
-        <table class="table-striped w-75">
-          <tr onclick="new_asset()">
-            <td class="btn btn-outline-primary w-100">Add Asset</td>
-          </tr>
+        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#assets-modal">Add
+          Asset</button>
+
+        <h5>Ian's Assets</h5>
+        <table class="table table-striped mb-5" style="max-width: 250px;">
+          <tbody id="assets-table-ian"></tbody>
+        </table>
+
+        <h5>Marty's Assets</h5>
+        <table class="table table-striped mb-5" style="max-width: 250px;">
+          <tbody id="assets-table-marty"></tbody>
+        </table>
+
+        <h5>Shared Assets</h5>
+        <table class="table table-striped mb-5" style="max-width: 250px;">
+          <tbody id="assets-table-shared"></tbody>
         </table>
       </div>
-    </div>
 
+      <div id="assets-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Enter Asset</h5>
+            </div>
+            <div class="modal-body">
+              <input id="assets-id" type="hidden" val="-1">
+              <div class="mb-3">
+                <label for="assets-name" class="form-label fw-bold">Asset Name</label>
+                <input type="text" value="" id="assets-name" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="assets-amount" class="form-label fw-bold">Asset Start Amount</label>
+                <input type="number" value="" id="assets-amount" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="assets-endamount" class="form-label fw-bold">Asset End Amount</label>
+                <input type="number" value="" id="assets-endamount" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="assets-person" class="form-label fw-bold">Person</label>
+                <select id="assets-person" class="form-select">
+                  <option value="ian">Ian</option>
+                  <option value="marty">Marty</option>
+                  <option value="shared">Shared</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_record('assets');"
+                data-bs-dismiss="modal">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- endregion -->
+
+    <!-- #region loans-tab -->
     <div id="loans-tab" style="display: none;">
 
       <div class="w-100 d-flex flex-column align-items-center mb-3">
-        <h4>Loans</h4>
-        <table class="table-striped w-75">
-          <tr onclick="new_loan()">
-            <td class="btn btn-outline-primary w-100">Add Loan</td>
-          </tr>
+        <h4>loans</h4>
+        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#loans-modal">Add Loan</button>
+
+        <h5>Ian's loans</h5>
+        <table class="table table-striped mb-5" style="max-width: 250px;">
+          <tbody id="loans-table-ian"></tbody>
+        </table>
+
+        <h5>Marty's loans</h5>
+        <table class="table table-striped mb-5" style="max-width: 250px;">
+          <tbody id="loans-table-marty"></tbody>
+        </table>
+
+        <h5>Shared loans</h5>
+        <table class="table table-striped mb-5" style="max-width: 250px;">
+          <tbody id="loans-table-shared"></tbody>
         </table>
       </div>
+
+      <div id="loans-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Enter Loan</h5>
+            </div>
+            <div class="modal-body">
+              <input id="loans-id" type="hidden" val="-1">
+              <div class="mb-3">
+                <label for="loans-name" class="form-label fw-bold">Loan Name</label>
+                <input type="text" value="" id="loans-name" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="loans-amount" class="form-label fw-bold">Loan Start Amount</label>
+                <input type="number" value="" id="loans-amount" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="loans-endamount" class="form-label fw-bold">Loan End Amount</label>
+                <input type="number" value="" id="loans-endamount" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="loans-person" class="form-label fw-bold">Person</label>
+                <select id="loans-person" class="form-select">
+                  <option value="ian">Ian</option>
+                  <option value="marty">Marty</option>
+                  <option value="shared">Shared</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_record('loans');"
+                data-bs-dismiss="modal">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    <!-- #endregion -->
 
     <div id="summary-tab" style="display: none;">
-      <div id='summary-tab' class="w-100 d-flex flex-column align-items-center">
+      <div class="w-100 d-flex flex-column align-items-center summary">
         <h4>Summary</h4>
+
+        <div class="d-flex justify-content-between w-75 my-1">
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Income</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Total Income Ian</td>
+                  <td id="total-income-ian" class="text-success"></td>
+                </tr>
+                <tr>
+                  <td>Total Income Marty</td>
+                  <td id="total-income-marty" class="text-success"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Expenses Ian</td>
+                </tr>
+              </thead>
+              <tbody id="summary-expenses-ian">
+                <tr>
+                  <td>Total</td>
+                  <td id="total-expenses-ian" class="text-danger"></td>
+                </tr>
+                <tr>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Expenses Marty</td>
+                </tr>
+              </thead>
+              <tbody id="summary-expenses-marty">
+                <tr>
+                  <td>Total</td>
+                  <td id="total-expenses-marty" class="text-danger"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Shared Expenses</td>
+                </tr>
+              </thead>
+              <tbody id="summary-expenses-shared">
+                <tr>
+                  <td>Total Shared Expenses</td>
+                  <td id="total-expenses-shared" class="text-danger"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+
+        <div class="d-flex justify-content-between w-75 my-1">
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Accounts Ian</td>
+                </tr>
+              </thead>
+              <tbody id="summary-accounts-ian">
+                <tr>
+                  <td>Total</td>
+                  <td id="total-accounts-ian" class="text-success"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Accounts Marty</td>
+                </tr>
+              </thead>
+              <tbody id="summary-accounts-ian">
+                <tr>
+                  <td>Total</td>
+                  <td id="total-accounts-marty" class="text-success"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Accounts Shared</td>
+                </tr>
+              </thead>
+              <tbody id="summary-accounts-shared">
+                <tr>
+                  <td>Total</td>
+                  <td id="total-accounts-shared" class="text-success"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+
+        <div class="d-flex justify-content-between w-75 my-1">
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Assets Ian</td>
+                </tr>
+              </thead>
+              <tbody id="summary-assets-ian">
+                <tr>
+                  <td>Total</td>
+                  <td id="total-assets-ian" class="text-success"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Assets Marty</td>
+                </tr>
+              </thead>
+              <tbody id="summary-assets-ian">
+                <tr>
+                  <td>Total</td>
+                  <td id="total-assets-marty" class="text-success"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Assets Shared</td>
+                </tr>
+              </thead>
+              <tbody id="summary-assets-shared">
+                <tr>
+                  <td>Total</td>
+                  <td id="total-assets-shared" class="text-success"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+
+        <div class="d-flex justify-content-between w-75 my-1">
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Loans Ian</td>
+                </tr>
+              </thead>
+              <tbody id="summary-loans-ian">
+                <tr>
+                  <td>Total</td>
+                  <td id="total-loans-ian" class="text-danger"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Loans Marty</td>
+                </tr>
+              </thead>
+              <tbody id="summary-loans-ian">
+                <tr>
+                  <td>Total</td>
+                  <td id="total-loans-marty" class="text-danger"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Loans Shared</td>
+                </tr>
+              </thead>
+              <tbody id="summary-loans-shared">
+                <tr>
+                  <td>Total</td>
+                  <td id="total-loans-shared" class="text-danger"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+
+        <div class="my-3">
+          <table class="table table-striped">
+            <thead><tr><td class="fw-bold">Net Worth</td></tr></thead>
+            <tbody>
+              <tr><td>Net Worth Ian</td><td id="net-worth-ian"></td></tr>
+              <tr><td>Net Worth Marty</td><td id="net-worth-marty"></td></tr>
+              <tr><td>Combined Net Worth</td><td id="net-worth-marty"></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </main>
-
-  <div id="year-modal" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Enter Year</h5>
-        </div>
-        <div class="modal-body">
-          <input type="text" value="" id="year" class="form-control">
-        </div>
-        <div class="modal-footer d-flex justify-content-between">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="FinanceRecord.new_year();"
-            data-bs-dismiss="modal">Submit</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- #endregion -->
 
   <script>
     class FinanceRecord {
@@ -269,7 +702,6 @@
 
         $('#year-select').html('');
         $('#year-select').append(sorted_years);
-
 
         $('#year-select').trigger('change');
       };
@@ -406,15 +838,34 @@
 
     };
 
-    const new_record_button = (type, id, record) => {
-      switch (type) {
-        case 'income': return `
-        <td class="d-flex justify-content-between">
-          <button onclick="FinanceRecord.edit_record('income', ${id})" class="btn btn-outline-success">$${record.amount}</button>
-          <button class="btn btn-danger" onclick="FinanceRecord.delete_record('income', ${id})">Delete</button>
-        </td>
-        `;
+    const new_record_body = (type, id, record) => {
+      if (type === 'income' || record.endamount === '') {
+        return new_record_success_button(type, id, `$${record.amount}`);
       }
+      else if (type === 'expenses') {
+        return new_record_danger_button(type, id, `$${record.amount} - ${record.category}`);
+      }
+      else if (type === 'loans') {
+        return Number.parseInt(record.amount) > Number.parseInt(record.endamount)
+          ? new_record_success_button(type, id, `$${record.amount} <i class="fa-solid fa-arrow-right"></i> $${record.endamount}`)
+          : new_record_danger_button(type, id, `$${record.amount} <i class="fa-solid fa-arrow-right"></i> $${record.endamount}`);
+      }
+
+      return Number.parseInt(record.amount) <= Number.parseInt(record.endamount)
+        ? new_record_success_button(type, id, `$${record.amount} <i class="fa-solid fa-arrow-right"></i> $${record.endamount}`)
+        : new_record_danger_button(type, id, `$${record.amount} <i class="fa-solid fa-arrow-right"></i> $${record.endamount}`);
+    }
+
+    const new_record_success_button = (type, id, label) => {
+      return `<button onclick="FinanceRecord.edit_record('${type}', ${id})" class="btn btn-outline-success">${label}</button>`;
+    }
+
+    const new_record_danger_button = (type, id, label) => {
+      return `<button onclick="FinanceRecord.edit_record('${type}', ${id})" class="btn btn-outline-danger">${label}</button>`;
+    }
+
+    const new_record_delete_button = (type, id) => {
+      return `<button class="btn btn-danger" onclick="FinanceRecord.delete_record('${type}', ${id})"><i class="fa-solid fa-trash"></i></button>`;
     }
 
     const refresh_table = (type) => {
@@ -422,10 +873,18 @@
 
       $(`#${type}-table-ian`).html('');
       $(`#${type}-table-marty`).html('');
+      $(`#${type}-table-shared`)?.html('');
 
       for (const id in records) {
         const tr = $('<tr></tr>');
-        tr.append(new_record_button(type, id, records[id]));
+        const td = $(`<td><h6>${records[id].name}</h6></td>`);
+        const body = $('<div class="d-flex justify-content-between"></div>');
+
+        body.append(new_record_body(type, id, records[id]));
+        body.append(new_record_delete_button(type, id));
+
+        td.append(body);
+        tr.append(td);
 
         $(`#${type}-table-${records[id].person}`).append(tr);
       }
