@@ -9,7 +9,7 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://kit.fontawesome.com/7d5a1b1b0d.js" crossorigin="anonymous"></script>
   <style>
-    .summary > div {
+    .summary>div {
       border-top: 1px solid black;
     }
   </style>
@@ -370,20 +370,21 @@
     <div id="loans-tab" style="display: none;">
 
       <div class="w-100 d-flex flex-column align-items-center mb-3">
-        <h4>loans</h4>
-        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#loans-modal">Add Loan</button>
+        <h4>Loans</h4>
+        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#loans-modal">Add
+          Loan</button>
 
-        <h5>Ian's loans</h5>
+        <h5>Ian's Loans</h5>
         <table class="table table-striped mb-5" style="max-width: 250px;">
           <tbody id="loans-table-ian"></tbody>
         </table>
 
-        <h5>Marty's loans</h5>
+        <h5>Marty's Loans</h5>
         <table class="table table-striped mb-5" style="max-width: 250px;">
           <tbody id="loans-table-marty"></tbody>
         </table>
 
-        <h5>Shared loans</h5>
+        <h5>Shared Loans</h5>
         <table class="table table-striped mb-5" style="max-width: 250px;">
           <tbody id="loans-table-shared"></tbody>
         </table>
@@ -429,9 +430,11 @@
     </div>
     <!-- #endregion -->
 
+    <!-- #region summary-tab -->
     <div id="summary-tab" style="display: none;">
-      <div class="w-100 d-flex flex-column align-items-center summary">
-        <h4>Summary</h4>
+      <button class="btn btn-primary" onclick="print_summary()">Print Summary</button>
+      <div id="print" class="w-100 d-flex flex-column align-items-center summary">
+        <h4 id="summary-title">Summary</h4>
 
         <div class="d-flex justify-content-between w-75 my-1">
           <div>
@@ -465,8 +468,6 @@
                 <tr>
                   <td>Total</td>
                   <td id="total-expenses-ian" class="text-danger"></td>
-                </tr>
-                <tr>
                 </tr>
               </tbody>
             </table>
@@ -531,7 +532,7 @@
                   <td class="fw-bold">Accounts Marty</td>
                 </tr>
               </thead>
-              <tbody id="summary-accounts-ian">
+              <tbody id="summary-accounts-marty">
                 <tr>
                   <td>Total</td>
                   <td id="total-accounts-marty" class="text-success"></td>
@@ -583,7 +584,7 @@
                   <td class="fw-bold">Assets Marty</td>
                 </tr>
               </thead>
-              <tbody id="summary-assets-ian">
+              <tbody id="summary-assets-marty">
                 <tr>
                   <td>Total</td>
                   <td id="total-assets-marty" class="text-success"></td>
@@ -635,7 +636,7 @@
                   <td class="fw-bold">Loans Marty</td>
                 </tr>
               </thead>
-              <tbody id="summary-loans-ian">
+              <tbody id="summary-loans-marty">
                 <tr>
                   <td>Total</td>
                   <td id="total-loans-marty" class="text-danger"></td>
@@ -663,18 +664,82 @@
 
 
 
-        <div class="my-3">
-          <table class="table table-striped">
-            <thead><tr><td class="fw-bold">Net Worth</td></tr></thead>
-            <tbody>
-              <tr><td>Net Worth Ian</td><td id="net-worth-ian"></td></tr>
-              <tr><td>Net Worth Marty</td><td id="net-worth-marty"></td></tr>
-              <tr><td>Combined Net Worth</td><td id="net-worth-marty"></td></tr>
-            </tbody>
-          </table>
+        <div class="d-flex justify-content-between w-75 my-1">
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Total Assets</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Total Assets Ian</td>
+                  <td id="assets-ian"></td>
+                </tr>
+                <tr>
+                  <td>Total Assets Marty</td>
+                  <td id="assets-marty"></td>
+                </tr>
+                <tr>
+                  <td>Combined Assets</td>
+                  <td class="text-success" id="assets-shared"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Total Debts</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Total Debts Ian</td>
+                  <td id="debts-ian"></td>
+                </tr>
+                <tr>
+                  <td>Total Debts Marty</td>
+                  <td id="debts-marty"></td>
+                </tr>
+                <tr>
+                  <td>Combined Debts</td>
+                  <td class="text-danger" id="debts-shared"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="fw-bold">Net Worth</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Net Worth Ian</td>
+                  <td id="net-worth-ian"></td>
+                </tr>
+                <tr>
+                  <td>Net Worth Marty</td>
+                  <td id="net-worth-marty"></td>
+                </tr>
+                <tr>
+                  <td>Combined Net Worth</td>
+                  <td id="net-worth-shared"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
+    <!-- #endregion -->
   </main>
   <!-- #endregion -->
 
@@ -719,7 +784,12 @@
             id = element.value;
           }
           else {
-            record[element.id.split('-')[1]] = element.value;
+            if (element.type === 'number') {
+              record[element.id.split('-')[1]] = Number.parseFloat(element.value);
+            }
+            else {
+              record[element.id.split('-')[1]] = element.value;
+            }
           }
         }
 
@@ -762,7 +832,7 @@
 
         records = records.splice(n - 1);
 
-        refresh_tables();
+        refresh_table(type);
       }
 
       static get_records_table = (table_name) => {
@@ -808,6 +878,116 @@
       };
     };
 
+    class FinanceCalculator {
+      constructor() {
+        this.assets = { ian: 0, marty: 0, shared: 0 };
+        this.debts = { ian: 0, marty: 0, shared: 0 };
+      }
+
+      get_total_income = () => {
+        const income_records = FinanceRecord.get_records_table('income');
+
+        const data = { ian: 0, marty: 0 };
+
+        for (let record of income_records) {
+          data[record.person] += record.amount;
+        }
+
+        return data;
+      }
+
+      get_expenses = () => {
+        const expense_records = FinanceRecord.get_records_table('expenses');
+
+        const data = { ian: {}, marty: {}, shared: {} };
+
+        for (let record of expense_records) {
+          if (data[record.person][record.category] === undefined) {
+            data[record.person][record.category] = 0;
+          }
+
+          data[record.person][record.category] += record.amount;
+        }
+
+        return data;
+      }
+
+      get_accounts = () => {
+        const account_records = FinanceRecord.get_records_table('accounts');
+
+        const data = { ian: {}, marty: {}, shared: {} };
+
+        for (let record of account_records) {
+          if (data[record.person][record.name] === undefined) {
+            data[record.person][record.name] = 0;
+          }
+
+          data[record.person][record.name] += record.amount;
+          this.assets[record.person] += record.amount;
+        }
+
+        return data;
+      }
+
+      get_assets = () => {
+        const assets_records = FinanceRecord.get_records_table('assets');
+
+        const data = { ian: {}, marty: {}, shared: {} };
+
+        for (let record of assets_records) {
+          if (data[record.person][record.name] === undefined) {
+            data[record.person][record.name] = 0;
+          }
+
+          data[record.person][record.name] += record.amount
+          this.assets[record.person] += record.amount;
+        }
+
+        return data;
+      }
+
+      get_loans = () => {
+        const loans_records = FinanceRecord.get_records_table('loans');
+
+        const data = { ian: {}, marty: {}, shared: {} };
+
+        for (let record of loans_records) {
+          if (data[record.person][record.name] === undefined) {
+            data[record.person][record.name] = 0;
+          }
+
+          data[record.person][record.name] += record.amount;
+          this.debts[record.person] += record.amount;
+        }
+
+        return data;
+      }
+
+      get_combined_asset_totals = () => {
+        return {
+          ian: this.assets.ian,
+          marty: this.assets.marty,
+          shared: this.assets.ian + this.assets.marty + this.assets.shared
+        }
+      }
+
+      get_combined_debt_totals = () => {
+        return {
+          ian: this.debts.ian,
+          marty: this.debts.marty,
+          shared: this.debts.ian + this.debts.marty + this.debts.shared
+        }
+      }
+
+      get_net_worth = () => {
+        return {
+          ian: this.assets.ian - this.debts.ian,
+          marty: this.assets.marty - this.debts.marty,
+          shared: this.assets.ian + this.assets.marty + this.assets.shared - this.debts.ian - this.debts.marty - this.debts.shared
+        }
+      }
+    }
+
     const hide_tabs = () => {
       const tab_names = $('.nav-link').toArray().map(x => x.getHTML().toLowerCase())
       for (const tab_name of tab_names) {
@@ -817,6 +997,10 @@
     };
 
     const show_tab = (tab_name) => {
+      if (tab_name === 'summary') {
+        refresh_summary();
+      }
+
       hide_tabs();
       $(`#${tab_name}-tab`).show();
       $(`#${tab_name}-link`).addClass('active');
@@ -835,23 +1019,101 @@
     };
 
     const refresh_summary = () => {
+      const months = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
 
+      $('#summary-title').html(`${months[FinanceRecord.cur_month]}, ${FinanceRecord.cur_year} - Summary`)
+
+      const finance_calc = new FinanceCalculator();
+      const income = finance_calc.get_total_income();
+
+      $('#total-income-ian').html(`$${income.ian}`);
+      $('#total-income-marty').html(`$${income.marty}`);
+
+      const expenses = finance_calc.get_expenses();
+      summary_table_refresh('expenses', expenses);
+
+      const accounts = finance_calc.get_accounts();
+      summary_table_refresh('accounts', accounts);
+
+      const assets = finance_calc.get_assets();
+      summary_table_refresh('assets', assets);
+
+      const loans = finance_calc.get_loans();
+      summary_table_refresh('loans', loans);
+
+      const asset_totals = finance_calc.get_combined_asset_totals();
+      const debt_totals = finance_calc.get_combined_debt_totals();
+      const net_worth = finance_calc.get_net_worth();
+
+      if (net_worth.shared < 0) {
+        $('#net-worth-shared').removeClass();
+        $('#net-worth-shared').addClass('text-danger');
+      }
+      else if (net_worth.shared > 0) {
+        $('#net-worth-shared').removeClass();
+        $('#net-worth-shared').addClass('text-success');
+      }
+      else {
+        $('#net-worth-shared').removeClass();
+      }
+
+      combined_totals_refresh('assets', asset_totals);
+      combined_totals_refresh('debts', debt_totals);
+      combined_totals_refresh('net-worth', net_worth);
     };
+
+    const combined_totals_refresh = (type, data) => {
+      for (let [person, amount] of Object.entries(data)) {
+        $(`#${type}-${person}`).html(`$${amount}`);
+      }
+    }
+
+    const summary_table_refresh = (type, type_records) => {
+      const totals = {};
+
+      for (let [person, records] of Object.entries(type_records)) {
+        totals[person] = {};
+
+        for (let [category, amount] of Object.entries(records)) {
+          if (totals[person][category] === undefined) {
+            totals[person][category] = 0;
+          }
+
+          totals[person][category] += amount;
+
+        }
+
+        let total = 0;
+
+        const table_children = $(`#summary-${type}-${person}`).children();
+        $(`#summary-${type}-${person}`).html(table_children[table_children.length - 1]);
+
+        for (let [category, amount] of Object.entries(totals[person])) {
+          total += amount;
+          const cat = category[0].toUpperCase() + category.slice(1);
+          const cat_tr = $(`<tr><td>${cat}</td><td>$${amount}</td></tr>`);
+          $(`#summary-${type}-${person}`).prepend(cat_tr);
+        }
+
+        $(`#total-${type}-${person}`).html(`$${total}`);
+      }
+    }
 
     const new_record_body = (type, id, record) => {
       if (type === 'income' || record.endamount === '') {
         return new_record_success_button(type, id, `$${record.amount}`);
       }
       else if (type === 'expenses') {
-        return new_record_danger_button(type, id, `$${record.amount} - ${record.category}`);
+        return new_record_danger_button(type, id, `$${record.amount} - ${record.category[0].toUpperCase() + record.category.slice(1)}`);
       }
       else if (type === 'loans') {
-        return Number.parseInt(record.amount) > Number.parseInt(record.endamount)
+        return record.amount > record.endamount
           ? new_record_success_button(type, id, `$${record.amount} <i class="fa-solid fa-arrow-right"></i> $${record.endamount}`)
           : new_record_danger_button(type, id, `$${record.amount} <i class="fa-solid fa-arrow-right"></i> $${record.endamount}`);
       }
 
-      return Number.parseInt(record.amount) <= Number.parseInt(record.endamount)
+      return record.amount <= record.endamount
         ? new_record_success_button(type, id, `$${record.amount} <i class="fa-solid fa-arrow-right"></i> $${record.endamount}`)
         : new_record_danger_button(type, id, `$${record.amount} <i class="fa-solid fa-arrow-right"></i> $${record.endamount}`);
     }
@@ -896,15 +1158,36 @@
       for (const link of links) {
         refresh_table(link.text.toLowerCase());
       }
-
-      refresh_summary();
     };
 
     $('#year-select,#month-select').on('change', () => {
       $('#nav-tabs').show();
       $('#export').show();
       refresh_tables();
+      refresh_summary();
     });
+
+    const print_summary = () => {
+
+      const summary = document.getElementById("print");
+      const print = window.open('', '', 'left=0,top=0,width=1000,height=1000,toolbar=0,scrollbars=0,status=0');
+
+      print.document.write(`
+      <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <style>
+          .summary > div {
+            border-top: 1px solid black;
+          }
+        </style>
+      </head>
+      `);
+      print.document.write(summary.innerHTML);
+      print.document.close();
+      print.focus();
+      print.print();
+      print.close();
+    };
   </script>
 </body>
 
