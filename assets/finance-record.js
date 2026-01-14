@@ -108,9 +108,12 @@ class FinanceRecord {
 
     reader.addEventListener('load', (e) => {
       const data = JSON.parse(e.target.result);
-      FinanceRecord.records_list[data.year] = data.data;
 
-      $('#year-select').append(`<option value=${data.year}>${data.year}</option>`);
+      if (FinanceRecord.records_list[data.year] === undefined) {
+        $('#year-select').append(`<option value=${data.year}>${data.year}</option>`);
+      }
+
+      FinanceRecord.records_list[data.year] = data.data;
 
       this.cur_year = data.year;
 

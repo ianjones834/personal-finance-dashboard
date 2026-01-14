@@ -115,17 +115,24 @@
         <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#income-modal">Add
           Income</button>
 
-        <h5>Ian's Income</h5>
-        <table class="table table-striped w-50 mb-5" style="max-width: 250px;">
-          <tbody id="income-table-ian">
-          </tbody>
-        </table>
+        <div class="d-flex justify-content-between w-75">
+          <div>
+            <h5>Ian's Income</h5>
+            <table class="table table-striped" style="max-width: 250px;">
+              <tbody id="income-table-ian">
+              </tbody>
+            </table>
 
-        <h5>Marty's Income</h5>
-        <table class="table table-striped w-50" style="max-width: 250px;">
-          <tbody id="income-table-marty">
-          </tbody>
-        </table>
+          </div>
+
+          <div>
+            <h5>Marty's Income</h5>
+            <table class="table table-striped" style="max-width: 250px;">
+              <tbody id="income-table-marty">
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
       <div id="income-modal" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -169,23 +176,31 @@
         <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#expenses-modal">Add
           Expense</button>
 
-        <h5>Shared Expenses</h5>
-        <table class="table table-striped w-75 mb-5" style="max-width: 250px;">
-          <tbody id="expenses-table-shared">
-          </tbody>
-        </table>
+        <div class="d-flex justify-content-between w-75">
+          <div>
+            <h5>Shared Expenses</h5>
+            <table class="table table-striped mb-5" style="max-width: 250px;">
+              <tbody id="expenses-table-shared">
+              </tbody>
+            </table>
+          </div>
 
-        <h5>Ian's Expenses</h5>
-        <table class="table table-striped w-75 mb-5" style="max-width: 250px;">
-          <tbody id="expenses-table-ian">
-          </tbody>
-        </table>
+          <div>
+            <h5>Ian's Expenses</h5>
+            <table class="table table-striped mb-5" style="max-width: 250px;">
+              <tbody id="expenses-table-ian">
+              </tbody>
+            </table>
+          </div>
 
-        <h5>Marty's Expenses</h5>
-        <table class="table table-striped w-75 mb-5" style="max-width: 250px;">
-          <tbody id="expenses-table-marty">
-          </tbody>
-        </table>
+          <div>
+            <h5>Marty's Expenses</h5>
+            <table class="table table-striped mb-5" style="max-width: 250px;">
+              <tbody id="expenses-table-marty">
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <div id="expenses-modal" class="modal" tabindex="-1" role="dialog">
@@ -245,23 +260,30 @@
     <div id='accounts-tab' style="display: none;">
       <div class="w-100 d-flex flex-column align-items-center mb-3">
         <h4>Accounts</h4>
-        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#accounts-modal">Add
-          Accounts</button>
+        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#accounts-modal">Add Accounts</button>
 
-        <h5>Ian's Accounts</h5>
-        <table class="table table-striped w-75 mb-5" style="max-width: 300px;">
-          <tbody id="accounts-table-ian"></tbody>
-        </table>
+        <div class="d-flex justify-content-between w-75">
+          <div>
+            <h5>Ian's Accounts</h5>
+            <table class="table table-striped" style="max-width: 300px;">
+              <tbody id="accounts-table-ian"></tbody>
+            </table>
+          </div>
 
-        <h5>Marty's Accounts</h5>
-        <table class="table table-striped w-75 mb-5" style="max-width: 300px;">
-          <tbody id="accounts-table-marty"></tbody>
-        </table>
+          <div>
+            <h5>Marty's Accounts</h5>
+            <table class="table table-striped w-75 mb-5" style="max-width: 300px;">
+              <tbody id="accounts-table-marty"></tbody>
+            </table>
+          </div>
 
-        <h5>Shared Accounts</h5>
-        <table class="table table-striped w-75 mb-5" style="max-width: 300px;">
-          <tbody id="accounts-table-shared"></tbody>
-        </table>
+          <div>
+            <h5>Shared Accounts</h5>
+            <table class="table table-striped w-75 mb-5" style="max-width: 300px;">
+              <tbody id="accounts-table-shared"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <div id="accounts-modal" class="modal" tabindex="-1" role="dialog">
@@ -309,23 +331,31 @@
 
       <div class="w-100 d-flex flex-column align-items-center mb-3">
         <h4>Assets</h4>
-        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#assets-modal">Add
-          Asset</button>
+        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#assets-modal">Add Asset</button>
 
-        <h5>Ian's Assets</h5>
-        <table class="table table-striped mb-5" style="max-width: 250px;">
-          <tbody id="assets-table-ian"></tbody>
-        </table>
+        <div class="d-flex justify-content-between w-75">
+          <div>
+            <h5>Ian's Assets</h5>
+            <table class="table table-striped" style="max-width: 250px;">
+              <tbody id="assets-table-ian"></tbody>
+            </table>
+          </div>
 
-        <h5>Marty's Assets</h5>
-        <table class="table table-striped mb-5" style="max-width: 250px;">
-          <tbody id="assets-table-marty"></tbody>
-        </table>
+          <div>
 
-        <h5>Shared Assets</h5>
-        <table class="table table-striped mb-5" style="max-width: 250px;">
-          <tbody id="assets-table-shared"></tbody>
-        </table>
+            <h5>Marty's Assets</h5>
+            <table class="table table-striped mb-5" style="max-width: 250px;">
+              <tbody id="assets-table-marty"></tbody>
+            </table>
+          </div>
+
+          <div>
+            <h5>Shared Assets</h5>
+            <table class="table table-striped mb-5" style="max-width: 250px;">
+              <tbody id="assets-table-shared"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <div id="assets-modal" class="modal" tabindex="-1" role="dialog">
@@ -375,20 +405,28 @@
         <h4>Loans</h4>
         <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#loans-modal">Add Loan</button>
 
-        <h5>Ian's Loans</h5>
-        <table class="table table-striped mb-5" style="max-width: 250px;">
-          <tbody id="loans-table-ian"></tbody>
-        </table>
+        <div class="d-flex justify-content-between w-75">
+          <div>
+            <h5>Ian's Loans</h5>
+            <table class="table table-striped" style="max-width: 250px;">
+              <tbody id="loans-table-ian"></tbody>
+            </table>
+          </div>
 
-        <h5>Marty's Loans</h5>
-        <table class="table table-striped mb-5" style="max-width: 250px;">
-          <tbody id="loans-table-marty"></tbody>
-        </table>
+          <div>
+            <h5>Marty's Loans</h5>
+            <table class="table table-striped" style="max-width: 250px;">
+              <tbody id="loans-table-marty"></tbody>
+            </table>
+          </div>
 
-        <h5>Shared Loans</h5>
-        <table class="table table-striped mb-5" style="max-width: 250px;">
-          <tbody id="loans-table-shared"></tbody>
-        </table>
+          <div>
+            <h5>Shared Loans</h5>
+            <table class="table table-striped" style="max-width: 250px;">
+              <tbody id="loans-table-shared"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <div id="loans-modal" class="modal" tabindex="-1" role="dialog">
@@ -784,8 +822,8 @@
       const finance_calc = new FinanceCalculator();
       const income = finance_calc.get_total_income();
 
-      $('#total-income-ian').html(`$${income.ian}`);
-      $('#total-income-marty').html(`$${income.marty}`);
+      $('#total-income-ian').html(`${income.ian.toLocaleString("en-US", {style:"currency", currency:"USD"})}`);
+      $('#total-income-marty').html(`${income.marty.toLocaleString("en-US", {style:"currency", currency:"USD"})}`);
 
       const expenses = finance_calc.get_expenses();
       summary_table_refresh('expenses', expenses);
@@ -822,7 +860,7 @@
 
     const combined_totals_refresh = (type, data) => {
       for (let [person, amount] of Object.entries(data)) {
-        $(`#${type}-${person}`).html(`$${amount}`);
+        $(`#${type}-${person}`).html(`${amount.toLocaleString("en-US", {style:"currency", currency:"USD"})}`);
       }
     }
 
@@ -849,11 +887,11 @@
         for (let [category, amount] of Object.entries(totals[person])) {
           total += amount;
           const cat = category[0].toUpperCase() + category.slice(1);
-          const cat_tr = $(`<tr><td>${cat}</td><td>$${amount}</td></tr>`);
+          const cat_tr = $(`<tr><td>${cat}</td><td>${amount.toLocaleString("en-US", {style:"currency", currency:"USD"})}</td></tr>`);
           $(`#summary-${type}-${person}`).prepend(cat_tr);
         }
 
-        $(`#total-${type}-${person}`).html(`$${total}`);
+        $(`#total-${type}-${person}`).html(`${total.toLocaleString("en-US", {style:"currency", currency:"USD"})}`);
       }
     }
 
