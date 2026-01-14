@@ -8,6 +8,8 @@
   <script src="./assets/bootstrap.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://kit.fontawesome.com/7d5a1b1b0d.js" crossorigin="anonymous"></script>
+  <script src="./assets/finance-calculator.js"></script>
+  <script src="./assets/finance-record.js"></script>
   <style>
     .summary>div {
       border-top: 1px solid black;
@@ -269,7 +271,7 @@
               <h5 class="modal-title">Enter Account</h5>
             </div>
             <div class="modal-body">
-              <input id="accounts-id" type="hidden" val="-1">
+              <input id="accounts-id" type="hidden" value="-1">
               <div class="mb-3">
                 <label for="accounts-name" class="form-label fw-bold">Account Name</label>
                 <input type="text" value="" id="accounts-name" class="form-control">
@@ -333,7 +335,7 @@
               <h5 class="modal-title">Enter Asset</h5>
             </div>
             <div class="modal-body">
-              <input id="assets-id" type="hidden" val="-1">
+              <input id="assets-id" type="hidden" value="-1">
               <div class="mb-3">
                 <label for="assets-name" class="form-label fw-bold">Asset Name</label>
                 <input type="text" value="" id="assets-name" class="form-control">
@@ -371,8 +373,7 @@
 
       <div class="w-100 d-flex flex-column align-items-center mb-3">
         <h4>Loans</h4>
-        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#loans-modal">Add
-          Loan</button>
+        <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#loans-modal">Add Loan</button>
 
         <h5>Ian's Loans</h5>
         <table class="table table-striped mb-5" style="max-width: 250px;">
@@ -397,7 +398,7 @@
               <h5 class="modal-title">Enter Loan</h5>
             </div>
             <div class="modal-body">
-              <input id="loans-id" type="hidden" val="-1">
+              <input id="loans-id" type="hidden" value="-1">
               <div class="mb-3">
                 <label for="loans-name" class="form-label fw-bold">Loan Name</label>
                 <input type="text" value="" id="loans-name" class="form-control">
@@ -744,250 +745,6 @@
   <!-- #endregion -->
 
   <script>
-    class FinanceRecord {
-      static records_list = {};
-      static cur_year = 0;
-      static cur_month = 0;
-
-      static new_year = () => {
-        const year_val = $('#year').val();
-        const year = {};
-
-        for (let i = 0; i < 12; i++) {
-          year[i] = { income: [], expenses: [], assets: [], accounts: [], loans: [] };
-        }
-
-        this.records_list[year_val] = year;
-        const year_option = $(`<option value=${year_val}>${year_val}</option>`);
-
-        $('#year-select').append(`<option value=${year_val} selected>${year_val}</option>`);
-        const sorted_years = $('#year-select').children().toArray().sort((a, b) => a.value < b.value);
-
-        this.cur_year = year_val;
-
-        $('#year-select').html('');
-        $('#year-select').append(sorted_years);
-
-        $('#year-select').trigger('change');
-      };
-
-      static new_record = (type) => {
-        const record = {};
-        let id = -1;
-
-        let records = this.get_records_table(type);
-
-        for (const element of $(`#${type}-modal`).find('input,select')) {
-          const name = element.id.split('-')[1];
-
-          if (name == 'id') {
-            id = element.value;
-          }
-          else {
-            if (element.type === 'number') {
-              record[element.id.split('-')[1]] = Number.parseFloat(element.value);
-            }
-            else {
-              record[element.id.split('-')[1]] = element.value;
-            }
-          }
-        }
-
-        if (id == -1) {
-          records.push(record);
-        }
-        else {
-          records[id] = record;
-        }
-
-        reset_form(type);
-        refresh_table(type);
-      }
-
-      static edit_record = (type, id) => {
-        const record = this.records_list[this.cur_year][this.cur_month][type][id];
-        $(`#${type}-id`).val(id);
-
-        for (const [key, value] of Object.entries(record)) {
-          const element = $(`#${type}-${key}`);
-
-          if (element[0].nodeName == 'input') {
-            element.val(value);
-          }
-          else if (element[0].nodeName == 'select') {
-            element.find(`[value=${value}]`).prop('selected', true)
-          }
-        }
-
-        $(`#${type}-modal`).modal('show');
-      };
-
-      static delete_record = (type, id) => {
-        let records = this.records_list[this.cur_year][this.cur_month][type];
-        let n = records.length;
-
-        for (let i = id + 1; i < n; i++) {
-          records[i - 1] = records[i];
-        }
-
-        records = records.splice(n - 1);
-
-        refresh_table(type);
-      }
-
-      static get_records_table = (table_name) => {
-        return this.records_list[this.cur_year][this.cur_month][table_name];
-      }
-
-      static export_year = () => {
-        const json = JSON.stringify({ year: this.cur_year, data: this.records_list[this.cur_year] });
-        const blob = new Blob([json], { type: 'text/string' });
-        const download = document.createElement('a');
-
-        download.href = URL.createObjectURL(blob);
-        download.download = 'personal_finance_sheet_' + this.cur_year + '.json';
-        download.click();
-
-        URL.revokeObjectURL(download.href);
-      };
-
-      static import_year = () => {
-        const file = $('#import-year')[0].files[0];
-        const reader = new FileReader();
-
-        reader.addEventListener('load', (e) => {
-          const data = JSON.parse(e.target.result);
-          FinanceRecord.records_list[data.year] = data.data;
-
-          $('#year-select').html('');
-
-          for (const year in FinanceRecord.records_list) {
-            $('#year-select').append(`<option value=${year}>${year}</option>`);
-          }
-
-          const sorted_years = $('#year-select').children().toArray().sort((a, b) => a.value < b.value);
-          $('#year-select').html('');
-          $('#year-select').append(sorted_years);
-
-          FinanceRecord.cur_year = $('#year-select').find('option:first').val()
-          $('#year-select').find('option:first').prop('selected', true);
-          $('#year-select').trigger('change');
-        });
-
-        reader.readAsText(file);
-      };
-    };
-
-    class FinanceCalculator {
-      constructor() {
-        this.assets = { ian: 0, marty: 0, shared: 0 };
-        this.debts = { ian: 0, marty: 0, shared: 0 };
-      }
-
-      get_total_income = () => {
-        const income_records = FinanceRecord.get_records_table('income');
-
-        const data = { ian: 0, marty: 0 };
-
-        for (let record of income_records) {
-          data[record.person] += record.amount;
-        }
-
-        return data;
-      }
-
-      get_expenses = () => {
-        const expense_records = FinanceRecord.get_records_table('expenses');
-
-        const data = { ian: {}, marty: {}, shared: {} };
-
-        for (let record of expense_records) {
-          if (data[record.person][record.category] === undefined) {
-            data[record.person][record.category] = 0;
-          }
-
-          data[record.person][record.category] += record.amount;
-        }
-
-        return data;
-      }
-
-      get_accounts = () => {
-        const account_records = FinanceRecord.get_records_table('accounts');
-
-        const data = { ian: {}, marty: {}, shared: {} };
-
-        for (let record of account_records) {
-          if (data[record.person][record.name] === undefined) {
-            data[record.person][record.name] = 0;
-          }
-
-          data[record.person][record.name] += record.amount;
-          this.assets[record.person] += record.amount;
-        }
-
-        return data;
-      }
-
-      get_assets = () => {
-        const assets_records = FinanceRecord.get_records_table('assets');
-
-        const data = { ian: {}, marty: {}, shared: {} };
-
-        for (let record of assets_records) {
-          if (data[record.person][record.name] === undefined) {
-            data[record.person][record.name] = 0;
-          }
-
-          data[record.person][record.name] += record.amount
-          this.assets[record.person] += record.amount;
-        }
-
-        return data;
-      }
-
-      get_loans = () => {
-        const loans_records = FinanceRecord.get_records_table('loans');
-
-        const data = { ian: {}, marty: {}, shared: {} };
-
-        for (let record of loans_records) {
-          if (data[record.person][record.name] === undefined) {
-            data[record.person][record.name] = 0;
-          }
-
-          data[record.person][record.name] += record.amount;
-          this.debts[record.person] += record.amount;
-        }
-
-        return data;
-      }
-
-      get_combined_asset_totals = () => {
-        return {
-          ian: this.assets.ian,
-          marty: this.assets.marty,
-          shared: this.assets.ian + this.assets.marty + this.assets.shared
-        }
-      }
-
-      get_combined_debt_totals = () => {
-        return {
-          ian: this.debts.ian,
-          marty: this.debts.marty,
-          shared: this.debts.ian + this.debts.marty + this.debts.shared
-        }
-      }
-
-      get_net_worth = () => {
-        return {
-          ian: this.assets.ian - this.debts.ian,
-          marty: this.assets.marty - this.debts.marty,
-          shared: this.assets.ian + this.assets.marty + this.assets.shared - this.debts.ian - this.debts.marty - this.debts.shared
-        }
-      }
-    }
-
     const hide_tabs = () => {
       const tab_names = $('.nav-link').toArray().map(x => x.getHTML().toLowerCase())
       for (const tab_name of tab_names) {
