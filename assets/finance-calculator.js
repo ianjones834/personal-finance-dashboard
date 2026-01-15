@@ -88,7 +88,8 @@ class FinanceCalculator {
     return {
       ian: this.assets.ian,
       marty: this.assets.marty,
-      shared: this.assets.ian + this.assets.marty + this.assets.shared
+      shared: this.assets.shared,
+      combined: this.assets.ian + this.assets.marty + this.assets.shared
     }
   }
 
@@ -96,7 +97,8 @@ class FinanceCalculator {
     return {
       ian: this.debts.ian,
       marty: this.debts.marty,
-      shared: this.debts.ian + this.debts.marty + this.debts.shared
+      shared: this.debts.shared,
+      combined: this.debts.ian + this.debts.marty + this.debts.shared
     }
   }
 
@@ -104,7 +106,8 @@ class FinanceCalculator {
     return {
       ian: this.assets.ian - this.debts.ian,
       marty: this.assets.marty - this.debts.marty,
-      shared: this.assets.ian + this.assets.marty + this.assets.shared - this.debts.ian - this.debts.marty - this.debts.shared
+      shared: this.assets.shared - this.debts.shared,
+      combined: this.assets.ian + this.assets.marty + this.assets.shared - this.debts.ian - this.debts.marty - this.debts.shared
     }
   }
 }

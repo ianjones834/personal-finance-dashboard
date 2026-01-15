@@ -273,14 +273,14 @@
 
           <div>
             <h5>Marty's Accounts</h5>
-            <table class="table table-striped w-75 mb-5" style="max-width: 300px;">
+            <table class="table table-striped" style="max-width: 300px;">
               <tbody id="accounts-table-marty"></tbody>
             </table>
           </div>
 
           <div>
             <h5>Shared Accounts</h5>
-            <table class="table table-striped w-75 mb-5" style="max-width: 300px;">
+            <table class="table table-striped" style="max-width: 300px;">
               <tbody id="accounts-table-shared"></tbody>
             </table>
           </div>
@@ -345,14 +345,14 @@
           <div>
 
             <h5>Marty's Assets</h5>
-            <table class="table table-striped mb-5" style="max-width: 250px;">
+            <table class="table table-striped" style="max-width: 250px;">
               <tbody id="assets-table-marty"></tbody>
             </table>
           </div>
 
           <div>
             <h5>Shared Assets</h5>
-            <table class="table table-striped mb-5" style="max-width: 250px;">
+            <table class="table table-striped" style="max-width: 250px;">
               <tbody id="assets-table-shared"></tbody>
             </table>
           </div>
@@ -492,6 +492,14 @@
                 <tr>
                   <td>Total Income Marty</td>
                   <td id="total-income-marty" class="text-success"></td>
+                </tr>
+                <tr>
+                  <td>Ian's Percentage</td>
+                  <td id="ian-income-percentage"></td>
+                </tr>
+                <tr>
+                  <td>Marty's Percentage</td>
+                  <td id="marty-income-percentage"></td>
                 </tr>
               </tbody>
             </table>
@@ -722,8 +730,12 @@
                   <td id="assets-marty"></td>
                 </tr>
                 <tr>
+                  <td>Total Shared Assets</td>
+                  <td id="assets-shared"></td>
+                </tr>
+                <tr>
                   <td>Combined Assets</td>
-                  <td class="text-success" id="assets-shared"></td>
+                  <td class="text-success" id="assets-combined"></td>
                 </tr>
               </tbody>
             </table>
@@ -745,8 +757,12 @@
                   <td id="debts-marty"></td>
                 </tr>
                 <tr>
+                  <td>Total Shared Debts</td>
+                  <td id="debts-shared"></td>
+                </tr>
+                <tr>
                   <td>Combined Debts</td>
-                  <td class="text-danger" id="debts-shared"></td>
+                  <td class="text-danger" id="debts-combined"></td>
                 </tr>
               </tbody>
             </table>
@@ -770,8 +786,12 @@
                   <td id="net-worth-marty"></td>
                 </tr>
                 <tr>
-                  <td>Combined Net Worth</td>
+                  <td>Shared Net Worth</td>
                   <td id="net-worth-shared"></td>
+                </tr>
+                <tr>
+                  <td>Combined Net Worth</td>
+                  <td id="net-worth-combined"></td>
                 </tr>
               </tbody>
             </table>
@@ -826,6 +846,9 @@
       $('#total-income-ian').html(`${income.ian.toLocaleString("en-US", {style:"currency", currency:"USD"})}`);
       $('#total-income-marty').html(`${income.marty.toLocaleString("en-US", {style:"currency", currency:"USD"})}`);
 
+      $('#ian-income-percentage').html(`${(income.ian / (income.ian + income.marty) * 100).toFixed(2)}%`);
+      $('#marty-income-percentage').html(`${(income.marty / (income.ian + income.marty) * 100).toFixed(2)}%`);
+
       const expenses = finance_calc.get_expenses();
       summary_table_refresh('expenses', expenses);
 
@@ -842,16 +865,16 @@
       const debt_totals = finance_calc.get_combined_debt_totals();
       const net_worth = finance_calc.get_net_worth();
 
-      if (net_worth.shared < 0) {
-        $('#net-worth-shared').removeClass();
-        $('#net-worth-shared').addClass('text-danger');
+      if (net_worth.combined < 0) {
+        $('#net-worth-combined').removeClass();
+        $('#net-worth-combined').addClass('text-danger');
       }
-      else if (net_worth.shared > 0) {
-        $('#net-worth-shared').removeClass();
-        $('#net-worth-shared').addClass('text-success');
+      else if (net_worth.combined > 0) {
+        $('#net-worth-combined').removeClass();
+        $('#net-worth-combined').addClass('text-success');
       }
       else {
-        $('#net-worth-shared').removeClass();
+        $('#net-worth-combined').removeClass();
       }
 
       combined_totals_refresh('assets', asset_totals);
