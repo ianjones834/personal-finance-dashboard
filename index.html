@@ -910,10 +910,6 @@
       const debt_totals = finance_calc.get_combined_debt_totals();
       const net_worth = finance_calc.get_net_worth();
 
-      console.log(asset_totals);
-      console.log(debt_totals);
-      console.log(net_worth);
-
       combined_totals_refresh('assets', asset_totals);
       combined_totals_refresh('debts', debt_totals);
       combined_totals_refresh('net-worth', net_worth);

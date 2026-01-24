@@ -14,7 +14,7 @@ class FinanceRecord {
       const name = element.id.split('-')[1];
 
       if (name == 'id') {
-        id = element.value;
+        id = element.value ?? -1;
       }
       else {
         if (element.type === 'number') {
