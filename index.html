@@ -79,6 +79,7 @@
       </div>
       <!-- #endregion -->
 
+      <button class="btn btn-outline-primary" id="copy-month" style="display: none;" onclick="FinanceRecord.copy_month();">Copy to Next Month</button>
       <btn class="btn btn-primary" id="export" style="display: none;" onclick="FinanceRecord.export_year()">Export Year
       </btn>
 
@@ -225,6 +226,7 @@
                   <option value="electricity">Electricity</option>
                   <option value="food">Food</option>
                   <option value="fun">Fun</option>
+                  <option value="furniture">Furniture</option>
                   <option value="gas">Gas</option>
                   <option value="groceries">Groceries</option>
                   <option value="house">House</option>
@@ -233,6 +235,7 @@
                   <option value="loans">Loans</option>
                   <option value="medical">Medical</option>
                   <option value="rent">Rent</option>
+                  <option value="school">School</option>
                   <option value="subscriptions">Subscriptions</option>
                   <option value="travel">Travel</option>
                 </select>
@@ -1070,6 +1073,7 @@
     $('#year-select,#month-select').on('change', () => {
       $('#nav-tabs').show();
       $('#export').show();
+      $('#copy-month').show();
       refresh_tables();
       refresh_summary();
     });

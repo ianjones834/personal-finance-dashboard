@@ -131,4 +131,23 @@ class FinanceRecord {
       $('#year-select option').prop('selected', false);
       $('#year-select').find(`[value=${this.cur_year}]`).prop('selected', true);
   }
+
+  static copy_month = () => {
+    if (this.cur_month == 11) {
+      // implement carry over to next year;
+      return;
+    }
+
+    const categories = ['accounts', 'loans', 'assets'];
+
+    for (const category of categories) {
+      for (const record of this.get_records_table(category)) {
+        const new_record = record;
+        new_record.amount = new_record.endamount;
+        new_record.endamount = 0;
+
+        this.records_list[this.cur_year][this.cur_month + 1][category].push(new_record);
+      }
+    }
+  }
 };
