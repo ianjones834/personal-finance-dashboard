@@ -1,8 +1,8 @@
 
 class FinanceCalculator {
   constructor() {
-    this.assets = { ian: 0, marty: 0, shared: 0 };
-    this.debts = { ian: 0, marty: 0, shared: 0 };
+    this.assets = { ian: {start: 0, end: 0}, marty: {start: 0, end: 0}, shared: {start: 0, end: 0}};
+    this.debts = { ian: {start: 0, end: 0}, marty: {start: 0, end: 0}, shared: {start: 0, end: 0}};
   }
 
   get_total_income = () => {
@@ -40,11 +40,13 @@ class FinanceCalculator {
 
     for (let record of account_records) {
       if (data[record.person][record.name] === undefined) {
-        data[record.person][record.name] = 0;
+        data[record.person][record.name] = {start: 0, end: 0};
       }
 
-      data[record.person][record.name] += record.amount;
-      this.assets[record.person] += record.amount;
+      data[record.person][record.name].start += record.amount;
+      data[record.person][record.name].end += record.endamount
+      this.assets[record.person].start += record.amount;
+      this.assets[record.person].end += record.endamount;
     }
 
     return data;
@@ -57,11 +59,13 @@ class FinanceCalculator {
 
     for (let record of assets_records) {
       if (data[record.person][record.name] === undefined) {
-        data[record.person][record.name] = 0;
+        data[record.person][record.name] = {start: 0, end: 0};
       }
 
-      data[record.person][record.name] += record.amount
-      this.assets[record.person] += record.amount;
+      data[record.person][record.name].start += record.amount;
+      data[record.person][record.name].end += record.endamount;
+      this.assets[record.person].start += record.amount;
+      this.assets[record.person].end += record.endamount;
     }
 
     return data;
@@ -74,11 +78,13 @@ class FinanceCalculator {
 
     for (let record of loans_records) {
       if (data[record.person][record.name] === undefined) {
-        data[record.person][record.name] = 0;
+        data[record.person][record.name] = {start: 0, end: 0};
       }
 
-      data[record.person][record.name] += record.amount;
-      this.debts[record.person] += record.amount;
+      data[record.person][record.name].start += record.amount;
+      data[record.person][record.name].end += record.endamount;
+      this.debts[record.person].start += record.amount;
+      this.debts[record.person].end += record.endamount;
     }
 
     return data;
@@ -89,7 +95,10 @@ class FinanceCalculator {
       ian: this.assets.ian,
       marty: this.assets.marty,
       shared: this.assets.shared,
-      combined: this.assets.ian + this.assets.marty + this.assets.shared
+      combined: {
+        start: this.sum_obj_cat(this.assets, 'start'),
+        end: this.sum_obj_cat(this.assets, 'end')
+      }
     }
   }
 
@@ -98,16 +107,35 @@ class FinanceCalculator {
       ian: this.debts.ian,
       marty: this.debts.marty,
       shared: this.debts.shared,
-      combined: this.debts.ian + this.debts.marty + this.debts.shared
+      combined: {
+        start: this.sum_obj_cat(this.debts, 'start'),
+        end: this.sum_obj_cat(this.debts, 'end')
+      }
     }
   }
 
   get_net_worth = () => {
     return {
-      ian: this.assets.ian - this.debts.ian,
-      marty: this.assets.marty - this.debts.marty,
-      shared: this.assets.shared - this.debts.shared,
-      combined: this.assets.ian + this.assets.marty + this.assets.shared - this.debts.ian - this.debts.marty - this.debts.shared
+      ian: {
+        start: this.assets.ian.start - this.debts.ian.start,
+        end: this.assets.ian.end - this.debts.ian.end
+      },
+      marty: {
+        start: this.assets.marty.start - this.debts.marty.start,
+        end: this.assets.marty.end - this.debts.marty.end,
+      },
+      shared: {
+        start: this.assets.shared.start - this.debts.shared.start,
+        end: this.assets.shared.end - this.debts.shared.end
+      },
+      combined: {
+        start: this.sum_obj_cat(this.assets, 'start') - this.sum_obj_cat(this.debts, 'start'),
+        end: this.sum_obj_cat(this.assets, 'end') - this.sum_obj_cat(this.debts, 'end')
+      }
     }
+  }
+
+  sum_obj_cat = (obj, cat) => {
+    return Object.entries(obj).reduce((acc, cur) => acc + cur[1][cat], 0);
   }
 }
