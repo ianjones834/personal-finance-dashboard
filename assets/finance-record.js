@@ -142,7 +142,9 @@ class FinanceRecord {
 
     for (const category of categories) {
       for (const record of this.get_records_table(category)) {
-        const new_record = record;
+        const new_record = {};
+        Object.assign(new_record, record);
+
         new_record.amount = new_record.endamount;
         new_record.endamount = 0;
 
