@@ -454,6 +454,18 @@
                 <input type="number" value="" id="loans-endamount" class="form-control">
               </div>
               <div class="mb-3">
+                <label for="loans-principal" class="form-label fw-bold">Loan Principal</label>
+                <input type="number" value="" id="loans-principal" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="loans-rate" class="form-label fw-bold">Loan Annual Interest Rate</label>
+                <input type="number" value="" id="loans-rate" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="loans-time" class="form-label fw-bold">Loan Period (Months)</label>
+                <input type="number" value="" id="loans-time" class="form-control">
+              </div>
+              <div class="mb-3">
                 <label for="loans-person" class="form-label fw-bold">Person</label>
                 <select id="loans-person" class="form-select">
                   <option value="ian">Ian</option>
@@ -974,6 +986,7 @@
             totals[person][category].end += amount.end;
           }
 
+            console.log(type);
           let total = {start: 0, end: 0};
 
           const table_children = $(`#summary-${type}-${person}`).children();
@@ -983,12 +996,16 @@
             total.start += amount.start;
             total.end += amount.end;
 
+            console.log(category);
+            console.log(amount);
+
+
             const cat = category[0].toUpperCase() + category.slice(1);
             const cat_tr = $(`<tr>
               <td>${cat}</td>
               <td>${amount.start.toLocaleString("en-US", {style:"currency", currency:"USD"})}</td>
               <td class=${
-              (type == 'loans' && total.start >= total.end) || (type !== 'loans' && total.start <= total.end)
+              (amount.start <= amount.end) != (type === 'loans')
                 ? 'text-success'
                 : 'text-danger'
               }>${amount.end.toLocaleString("en-US", {style:"currency", currency:"USD"})}</td>
@@ -1002,7 +1019,7 @@
           $(`#total-${type}-${person}-end`).removeClass();
 
           $(`#total-${type}-${person}-end`).addClass(
-            (type == 'loans' && total.start >= total.end) || (type !== 'loans' && total.start <= total.end)
+            (total.start <= total.end) != (type === 'loans')
             ? 'text-success'
             : 'text-danger'
           )
@@ -1012,15 +1029,19 @@
 
     const new_record_body = (type, id, record) => {
       if (type === 'income' || record.endamount === '') {
-        return new_record_success_button(type, id, `$${record.amount}`);
+        return new_record_success_button(type, id, `${record.amount}`);
       }
       else if (type === 'expenses') {
         return new_record_danger_button(type, id, `$${record.amount} - ${record.category[0].toUpperCase() + record.category.slice(1)}`);
       }
       else if (type === 'loans') {
+        const monthly_decimal_rate = record.rate / 1200;
+        const monthly_payment = record.principal * (monthly_decimal_rate * Math.pow(1 + monthly_decimal_rate, record.time)) / (Math.pow(1 + monthly_decimal_rate, record.time) - 1);
+        const monthly_payment_string = monthly_payment > 0 ? `Monthly Payment: $${monthly_payment.toFixed(2)}` : '';
+
         return record.amount > record.endamount
-          ? new_record_success_button(type, id, `$${record.amount} <i class="fa-solid fa-arrow-right"></i> $${record.endamount}`)
-          : new_record_danger_button(type, id, `$${record.amount} <i class="fa-solid fa-arrow-right"></i> $${record.endamount}`);
+          ? new_record_success_button(type, id, `$${record.amount} <i class="fa-solid fa-arrow-right"></i> $${record.endamount} <br> ${monthly_payment_string}`)
+          : new_record_danger_button(type, id, `$${record.amount} <i class="fa-solid fa-arrow-right"></i> $${record.endamount} <br> ${monthly_payment_string}`);
       }
 
       return record.amount <= record.endamount

@@ -138,4 +138,9 @@ class FinanceCalculator {
   sum_obj_cat = (obj, cat) => {
     return Object.entries(obj).reduce((acc, cur) => acc + cur[1][cat], 0);
   }
+
+  static loans_monthly_payments = () => {
+    const loan_records = FinanceRecord.get_records_table('loans');
+
+  }
 }
