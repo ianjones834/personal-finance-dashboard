@@ -516,6 +516,14 @@
                   <td>Marty's Percentage</td>
                   <td id="marty-income-percentage"></td>
                 </tr>
+                <tr class="fw-bold">
+                    <td>Total Owed Ian</td>
+                    <td id="total-owed-ian"></td>
+                </tr>
+                <tr class="fw-bold">
+                    <td>Total Owed Marty</td>
+                    <td id="total-owed-marty"></td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -906,11 +914,18 @@
       $('#total-income-ian').html(`${income.ian.toLocaleString("en-US", {style:"currency", currency:"USD"})}`);
       $('#total-income-marty').html(`${income.marty.toLocaleString("en-US", {style:"currency", currency:"USD"})}`);
 
-      $('#ian-income-percentage').html(`${(income.ian / (income.ian + income.marty) * 100).toFixed(2)}%`);
-      $('#marty-income-percentage').html(`${(income.marty / (income.ian + income.marty) * 100).toFixed(2)}%`);
+      const ian_perc = income.ian / (income.ian + income.marty);
+      const marty_perc = income.marty / (income.ian + income.marty);
+
+      $('#ian-income-percentage').html(`${(ian_perc * 100).toFixed(2)}%`);
+      $('#marty-income-percentage').html(`${(marty_perc * 100).toFixed(2)}%`);
 
       const expenses = finance_calc.get_expenses();
       summary_table_refresh('expenses', expenses);
+
+      const total_expenses = Number.parseFloat($('#total-expenses-shared').html().substring(1).replaceAll(',', ''));
+      $('#total-owed-ian').html(`${(total_expenses * ian_perc).toLocaleString("en-US", {style:"currency", currency:"USD"})}`);
+      $('#total-owed-marty').html(`${(total_expenses * marty_perc).toLocaleString("en-US", {style:"currency", currency:"USD"})}`);
 
       const accounts = finance_calc.get_accounts();
       summary_table_refresh('accounts', accounts);
@@ -986,7 +1001,6 @@
             totals[person][category].end += amount.end;
           }
 
-            console.log(type);
           let total = {start: 0, end: 0};
 
           const table_children = $(`#summary-${type}-${person}`).children();
@@ -995,10 +1009,6 @@
           for (let [category, amount] of Object.entries(totals[person])) {
             total.start += amount.start;
             total.end += amount.end;
-
-            console.log(category);
-            console.log(amount);
-
 
             const cat = category[0].toUpperCase() + category.slice(1);
             const cat_tr = $(`<tr>
