@@ -146,7 +146,7 @@ class FinanceRecord {
         Object.assign(new_record, record);
 
         new_record.amount = new_record.endamount;
-        new_record.endamount = 0;
+        new_record.endamount = new_record.amount;
 
         this.records_list[this.cur_year][this.cur_month + 1][category].push(new_record);
       }
